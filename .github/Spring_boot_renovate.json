@@ -1,0 +1,78 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":semanticCommits",
+    ":semanticCommitTypeAll(chore)",
+    ":preserveSemverRanges",
+    "helpers:pinGitHubActionDigests"
+  ],
+
+  "timezone": "America/New_York",
+  "prHourlyLimit": 5,
+  "prConcurrentLimit": 10,
+
+  "labels": ["dependencies", "renovate"],
+  "dependencyDashboard": true,
+
+  "schedule": ["after 6pm every weekday", "every weekend"],
+
+  "rangeStrategy": "bump",
+
+  "enabledManagers": [
+    "maven",
+    "gradle",
+    "github-actions",
+    "dockerfile"
+  ],
+
+  "packageRules": [
+    {
+      "description": "Automerge safe patches for everything",
+      "matchUpdateTypes": ["patch"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    },
+    {
+      "description": "Prioritize security updates immediately",
+      "matchCategories": ["security"],
+      "automerge": true,
+      "schedule": ["at any time"],
+      "labels": ["security"]
+    },
+    {
+      "description": "Group Spring Boot core dependencies",
+      "groupName": "spring-boot",
+      "matchManagers": ["maven", "gradle"],
+      "matchPackagePatterns": ["^org\\.springframework\\.boot(:|$)"]
+    },
+    {
+      "description": "Group Spring Cloud family",
+      "groupName": "spring-cloud",
+      "matchManagers": ["maven", "gradle"],
+      "matchPackagePatterns": ["^org\\.springframework\\.cloud(:|$)"]
+    },
+    {
+      "description": "Group test libraries",
+      "groupName": "test-libs",
+      "matchManagers": ["maven", "gradle"],
+      "matchPackagePatterns": [
+        "^org\\.junit",
+        "^org\\.mockito",
+        "^org\\.assertj",
+        "^org\\.hamcrest"
+      ]
+    },
+    {
+      "description": "GitHub Actions updates",
+      "matchManagers": ["github-actions"],
+      "rangeStrategy": "bump"
+    },
+    {
+      "description": "Docker base images",
+      "matchManagers": ["dockerfile"],
+      "rangeStrategy": "bump"
+    }
+  ]
+}
